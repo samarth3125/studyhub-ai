@@ -1,10 +1,11 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
-import ProtectedRoute from "./routes/ProtectedRoute";
-
+import Dashboard from "./pages/Dashboard.jsx";
+import Subjects from "./pages/Subjects.jsx";
+import Notes from "./pages/Notes.jsx";
+import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 
 function App() {
   return (
@@ -22,6 +23,24 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/subjects"
+          element={
+            <ProtectedRoute>
+              <Subjects />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+  path="/subjects/:subjectId/notes"
+  element={
+    <ProtectedRoute>
+      <Notes />
+    </ProtectedRoute>
+  }
+/>
       </Routes>
     </BrowserRouter>
   );
