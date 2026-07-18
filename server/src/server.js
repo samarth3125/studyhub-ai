@@ -13,6 +13,7 @@ const startServer = async () => {
 
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
+      console.log("KEY:", process.env.GOOGLE_API_KEY);
     });
   } catch (error) {
     console.error("Failed to start server");
