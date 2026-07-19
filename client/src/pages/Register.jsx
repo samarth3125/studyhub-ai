@@ -78,6 +78,11 @@ const Register = () => {
             Login
           </Link>
         </p>
+        <p className="text-gray-400 mt-5 text-center">
+         <Link to="/" className="text-indigo-400 hover:text-indigo-300 ">
+        ← Back to home page
+      </Link>
+      </p>
       </form>
     </div>
   );

@@ -70,7 +70,11 @@ const Subjects = () => {
 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-10">
-      <h1 className="text-4xl font-bold mb-2">My Subjects 📚</h1>
+
+       <Link to="/dashboard" className="text-indigo-400 hover:text-indigo-300">
+        ← Back to dashboard
+      </Link>
+      <h1 className="text-4xl font-bold mb-2 mt-5">My Subjects 📚</h1>
 
       <p className="text-gray-400 mb-8">
         Organize your learning subjects

@@ -4,6 +4,10 @@ import { useParams, Link } from "react-router-dom";
 import api from "../api/axios";
 import { generateQuiz } from "../api/quiz";
 import QuizCard from "../components/QuizCard";
+import { generateFlashcards } from "../api/flashcards";
+import Flashcard from "../components/Flashcard";
+import AIChat from "../components/AIChat";
+
 
 const Notes = () => {
   const { subjectId } = useParams();
@@ -18,6 +22,18 @@ const Notes = () => {
 
   const [quizzes, setQuizzes] = useState({});
 const [quizLoadingId, setQuizLoadingId] = useState(null);
+const [flashcards, setFlashcards] = useState({});
+const [flashcardLoadingId, setFlashcardLoadingId] = useState(null);
+
+// Current card index for each note
+const [currentCard, setCurrentCard] = useState({});
+
+const [search, setSearch] = useState("");
+
+const [sortBy, setSortBy] = useState("newest");
+
+// Whether each card is flipped
+
 
   const fetchNotes = async () => {
     try {
@@ -27,6 +43,29 @@ const [quizLoadingId, setQuizLoadingId] = useState(null);
       console.error(error);
     }
   };
+
+const handleGenerateFlashcards = async (note) => {
+  try {
+    setFlashcardLoadingId(note._id);
+
+    const res = await generateFlashcards(note.content);
+
+    setFlashcards((prev) => ({
+      ...prev,
+      [note._id]: res.cards,
+    }));
+
+    setCurrentCard((prev) => ({
+      ...prev,
+      [note._id]: 0,
+    }));
+  } catch (err) {
+    console.error(err);
+    alert("Failed to generate flashcards");
+  } finally {
+    setFlashcardLoadingId(null);
+  }
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -110,7 +149,15 @@ const [quizLoadingId, setQuizLoadingId] = useState(null);
 
   useEffect(() => {
     fetchNotes();
-  }, [subjectId]);
+  }, [fetchNotes, subjectId]);
+
+
+  const filteredNotes = notes.filter((note) => {
+  return (
+    note.title.toLowerCase().includes(search.toLowerCase()) ||
+    note.content.toLowerCase().includes(search.toLowerCase())
+  );
+});
 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-10">
@@ -118,6 +165,30 @@ const [quizLoadingId, setQuizLoadingId] = useState(null);
       <Link to="/subjects" className="text-indigo-400 hover:text-indigo-300">
         ← Back to Subjects
       </Link>
+<div className="flex flex-col md:flex-row gap-4 my-8">
+
+  <input
+    type="text"
+    placeholder="🔍 Search notes..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    className="flex-1 bg-slate-900 border border-slate-700 rounded-xl p-4 outline-none focus:border-indigo-500"
+  />
+
+  <select
+    value={sortBy}
+    onChange={(e) => setSortBy(e.target.value)}
+    className="bg-slate-900 border border-slate-700 rounded-xl p-4"
+  >
+    <option value="newest">Newest First</option>
+    <option value="oldest">Oldest First</option>
+    <option value="az">A - Z</option>
+    <option value="za">Z - A</option>
+  </select>
+
+</div>
+
+      
 
       <h1 className="text-4xl font-bold mt-5 mb-8">
         📝 My Notes
@@ -173,7 +244,7 @@ const [quizLoadingId, setQuizLoadingId] = useState(null);
 
         <div className="grid lg:grid-cols-2 gap-6">
 
-          {notes.map((note) => (
+          {filteredNotes.map((note) => (
 
             <div
               key={note._id}
@@ -222,6 +293,85 @@ const [quizLoadingId, setQuizLoadingId] = useState(null);
     : "🧠 Generate Quiz"}
 </button>
 
+<button
+  onClick={() => handleGenerateFlashcards(note)}
+  disabled={flashcardLoadingId === note._id}
+  className="w-full mt-3 bg-orange-600 hover:bg-orange-700 py-3 rounded-xl font-semibold"
+>
+  {flashcardLoadingId === note._id
+    ? "🃏 Creating Flashcards..."
+    : "🃏 Generate Flashcards"}
+</button>
+
+{flashcards[note._id] && (
+  <div className="mt-5 bg-slate-800 border border-orange-500/30 rounded-xl p-5">
+
+    <div className="flex justify-between items-center mb-4">
+
+      <h3 className="text-orange-400 font-bold text-lg">
+        🃏 Flashcards
+      </h3>
+
+      <span className="text-sm text-gray-400">
+        Card {currentCard[note._id] + 1} / {flashcards[note._id].length}
+      </span>
+
+    </div>
+
+   <Flashcard
+  question={
+    flashcards[note._id][currentCard[note._id]].question
+  }
+  answer={
+    flashcards[note._id][currentCard[note._id]].answer
+  }
+/>
+
+    <div className="flex justify-between mt-5">
+
+      <button
+        disabled={currentCard[note._id] === 0}
+        onClick={() => {
+          setCurrentCard((prev) => ({
+            ...prev,
+            [note._id]: prev[note._id] - 1,
+          }));
+
+          setFlippedCards((prev) => ({
+            ...prev,
+            [note._id]: false,
+          }));
+        }}
+        className="bg-slate-700 px-5 py-2 rounded-lg disabled:opacity-40"
+      >
+        ◀ Previous
+      </button>
+
+      <button
+        disabled={
+          currentCard[note._id] === flashcards[note._id].length - 1
+        }
+        onClick={() => {
+          setCurrentCard((prev) => ({
+            ...prev,
+            [note._id]: prev[note._id] + 1,
+          }));
+
+          setFlippedCards((prev) => ({
+            ...prev,
+            [note._id]: false,
+          }));
+        }}
+        className="bg-orange-600 px-5 py-2 rounded-lg disabled:opacity-40"
+      >
+        Next ▶
+      </button>
+
+    </div>
+
+  </div>
+)}
+
               {summaries[note._id] && (
 
                 <div className="mt-5 bg-slate-800 border border-green-500/30 rounded-xl p-5">
@@ -259,6 +409,7 @@ const [quizLoadingId, setQuizLoadingId] = useState(null);
   />
 )}
 
+<AIChat note={note} />
               <div className="flex gap-3 mt-6">
 
                 <button

@@ -6,12 +6,14 @@ import Dashboard from "./pages/Dashboard.jsx";
 import Subjects from "./pages/Subjects.jsx";
 import Notes from "./pages/Notes.jsx";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
+import Landing from "./pages/Landing";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Landing />} />
+        
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 

@@ -21,7 +21,9 @@ const Login = () => {
   };
 
   return (
+   
     <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+       
       <form
         onSubmit={handleSubmit}
         className="bg-slate-900 p-8 rounded-2xl w-96 shadow-xl"
@@ -56,7 +58,13 @@ const Login = () => {
             Register
           </Link>
         </p>
+        <p className="text-gray-400 mt-5 text-center">
+         <Link to="/" className="text-indigo-400 hover:text-indigo-300 ">
+        ← Back to home page
+      </Link>
+      </p>
       </form>
+       
     </div>
   );
 };

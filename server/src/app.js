@@ -7,7 +7,9 @@ import noteRoutes from "./modules/notes/note.routes.js";
 import aiRoutes from "./modules/ai/ai.routes.js";
 import quizRoutes from "./modules/quiz/quiz.routes.js";
 import pdfRoutes from "./modules/pdf/pdf.routes.js";
-
+import flashcardRoutes from "./modules/flashcards/flashcard.routes.js";
+import dashboardRoutes from "./modules/dashboard/dashboard.routes.js";
+import chatRoutes from "./modules/chat/chat.routes.js";
 
 const app = express();
 
@@ -26,6 +28,12 @@ app.use("/api/ai", aiRoutes);
 app.use("/api/quiz", quizRoutes);
 
 app.use("/api/pdf", pdfRoutes);
+
+app.use("/api/flashcards", flashcardRoutes);
+
+app.use("/api/dashboard", dashboardRoutes);
+
+app.use("/api/chat", chatRoutes);
 
 app.get("/", (req, res) => {
     res.json({
