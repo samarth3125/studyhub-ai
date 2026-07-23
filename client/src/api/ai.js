@@ -1,21 +1,7 @@
-import axios from "axios";
-
-const API = axios.create({
-  baseURL: "http://localhost:5000/api",
-});
-
-API.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-
-  return config;
-});
+import api from "./axios";
 
 export const summarizeNote = async (content) => {
-  const res = await API.post("/ai/summarize", {
+  const res = await api.post("/ai/summarize", {
     content,
   });
 

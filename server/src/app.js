@@ -1,5 +1,7 @@
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
+import compression from "compression";
 import authRoutes from "./modules/auth/auth.routes.js";
 import protect from "./middleware/auth.middleware.js";
 import subjectRoutes from "./modules/subjects/subject.routes.js";
@@ -15,9 +17,46 @@ import plannerRoutes from "./modules/planner/planner.routes.js";
 
 const app = express();
 
-app.use(cors());
+// Render (and most PaaS providers) sit behind a reverse proxy.
+// This is required for secure cookies / rate limiting / correct req.ip to work.
+app.set("trust proxy", 1);
 
-app.use(express.json());
+// Security headers
+app.use(helmet());
+
+// Gzip compression for all responses
+app.use(compression());
+
+// ---- CORS ----
+// CLIENT_URL can be a single origin or a comma-separated list
+// (e.g. "https://studyhub.vercel.app,https://www.studyhub.app")
+// Localhost origins are always allowed so local dev keeps working.
+const localOrigins = [
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+];
+
+const configuredOrigins = (process.env.CLIENT_URL || "")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+const allowedOrigins = [...new Set([...configuredOrigins, ...localOrigins])];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow non-browser requests (curl, server-to-server, health checks) with no origin
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  })
+);
+
+app.use(express.json({ limit: "10mb" }));
 
 app.use("/api/auth", authRoutes);
 
@@ -56,4 +95,33 @@ app.get("/api/profile", protect, (req, res) => {
     });
 
 });
+
+// ---- 404 handler ----
+// Anything that falls through the routes above is an unknown route.
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        message: "Route not found",
+    });
+});
+
+// ---- Global error handler ----
+// Any error passed to next(err), or thrown inside an async handler that
+// forwards to next, ends up here instead of crashing the process.
+app.use((err, req, res, next) => {
+    if (err && err.message === "Not allowed by CORS") {
+        return res.status(403).json({
+            success: false,
+            message: "Not allowed by CORS",
+        });
+    }
+
+    console.error(err.stack || err);
+
+    res.status(err.status || 500).json({
+        success: false,
+        message: err.message || "Internal Server Error",
+    });
+});
+
 export default app;
