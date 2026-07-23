@@ -36,7 +36,7 @@ const WhyChoose = () => {
             Study Smarter, Finish Faster
           </h2>
 
-          <p className="text-gray-400 mt-6 text-lg">
+          <p className="text-slate-400 mt-6 text-lg">
             Everything a student needs in one AI-powered platform.
           </p>
 
@@ -48,7 +48,7 @@ const WhyChoose = () => {
 
             <div
               key={item.title}
-              className="bg-slate-950 border border-slate-800 rounded-3xl p-8 text-center hover:border-indigo-500 transition duration-300"
+              className="bg-slate-950 border border-slate-800 rounded-3xl p-8 text-center hover:border-indigo-500/50 transition duration-300"
             >
 
               <h3 className="text-5xl font-bold text-indigo-500">
@@ -59,7 +59,7 @@ const WhyChoose = () => {
                 {item.title}
               </h4>
 
-              <p className="text-gray-400 mt-4">
+              <p className="text-slate-400 mt-4">
                 {item.desc}
               </p>
 

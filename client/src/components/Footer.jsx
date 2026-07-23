@@ -4,7 +4,7 @@ const Footer = () => {
   return (
     <>
       {/* CTA Section */}
-      <section className="bg-gradient-to-r from-indigo-600 to-purple-700 py-20 mt-20">
+      <section className="bg-indigo-600 py-20 mt-20 border-y border-indigo-500/30">
         <div className="max-w-5xl mx-auto text-center px-8">
 
           <h2 className="text-5xl font-bold text-white">
@@ -51,13 +51,13 @@ const Footer = () => {
               <span className="text-indigo-500">AI</span>
             </h3>
 
-            <p className="text-gray-400 mt-3">
+            <p className="text-slate-400 mt-3">
               AI-powered study platform built using the MERN Stack.
             </p>
 
           </div>
 
-          <div className="mt-8 md:mt-0 text-gray-500 text-sm">
+          <div className="mt-8 md:mt-0 text-slate-500 text-sm">
             © {new Date().getFullYear()} StudyHub AI. All rights reserved.
           </div>
 

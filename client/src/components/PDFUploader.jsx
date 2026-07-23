@@ -1,6 +1,9 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
+import { FileText, UploadCloud, CheckCircle2, Sparkles, Copy } from "lucide-react";
 import { uploadPDF } from "../api/pdf";
 import { summarizeNote } from "../api/ai";
+import Button from "./ui/Button";
 
 const PDFUploader = () => {
   const [file, setFile] = useState(null);
@@ -11,10 +14,8 @@ const PDFUploader = () => {
   const [summaryLoading, setSummaryLoading] = useState(false);
 
   const handleUpload = async () => {
-    console.log("Current File:", file);
-
     if (!file) {
-      alert("Please select a PDF first.");
+      toast.error("Please select a PDF first.");
       return;
     }
 
@@ -23,16 +24,12 @@ const PDFUploader = () => {
 
       const res = await uploadPDF(file);
 
-      console.log(res);
-
       setText(res.text);
       setSummary("");
+      toast.success("PDF processed successfully");
     } catch (err) {
       console.error(err);
-      alert(
-        err.response?.data?.message ||
-          "PDF Upload Failed"
-      );
+      toast.error(err.response?.data?.message || "PDF upload failed");
     } finally {
       setLoading(false);
     }
@@ -47,126 +44,118 @@ const PDFUploader = () => {
       setSummary(res.summary);
     } catch (err) {
       console.error(err);
-      alert("Summary generation failed");
+      toast.error("Summary generation failed");
     } finally {
       setSummaryLoading(false);
     }
   };
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-lg mt-10">
-
-      <h2 className="text-3xl font-bold mb-6">
-        📄 PDF Study Assistant
-      </h2>
+    <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-lg backdrop-blur-sm">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center">
+          <FileText size={18} className="text-indigo-400" />
+        </div>
+        <div>
+          <h2 className="text-lg font-semibold text-slate-100">
+            PDF Study Assistant
+          </h2>
+          <p className="text-slate-500 text-sm">
+            Upload a PDF to extract and summarize its text.
+          </p>
+        </div>
+      </div>
 
       <label className="block">
-
         <input
           type="file"
           accept="application/pdf"
           className="hidden"
           onChange={(e) => {
             const selected = e.target.files[0];
-
-            console.log("Selected:", selected);
-
-            if (selected) {
-              setFile(selected);
-            }
+            if (selected) setFile(selected);
           }}
         />
 
-        <div className="cursor-pointer border-2 border-dashed border-indigo-500 rounded-xl p-8 text-center hover:bg-slate-800 transition">
+        <div className="cursor-pointer border-2 border-dashed border-slate-700 hover:border-indigo-500 rounded-xl p-8 text-center transition-colors">
+          <UploadCloud size={28} className="mx-auto text-indigo-400 mb-3" />
 
-          <p className="text-xl">
-            📂 Click to Choose PDF
-          </p>
-
-          <p className="text-gray-400 mt-2">
-            PDF only • Max 10 MB
-          </p>
-
+          <p className="text-slate-200 font-medium">Click to choose a PDF</p>
+          <p className="text-slate-500 text-sm mt-1">PDF only • Max 10 MB</p>
         </div>
-
       </label>
 
       {file && (
-        <div className="mt-5 bg-slate-800 rounded-lg p-4">
-
-          <p className="text-green-400 font-semibold">
-            ✅ Selected File
-          </p>
-
-          <p className="text-gray-300 mt-1">
-            {file.name}
-          </p>
-
-          <p className="text-sm text-gray-500">
-            {(file.size / 1024 / 1024).toFixed(2)} MB
-          </p>
-
+        <div className="mt-4 bg-slate-800/60 border border-slate-700 rounded-xl p-4 flex items-center gap-3">
+          <CheckCircle2 size={18} className="text-emerald-400 shrink-0" />
+          <div className="min-w-0">
+            <p className="text-slate-200 text-sm font-medium truncate">
+              {file.name}
+            </p>
+            <p className="text-xs text-slate-500">
+              {(file.size / 1024 / 1024).toFixed(2)} MB
+            </p>
+          </div>
         </div>
       )}
 
-      <button
+      <Button
+        fullWidth
+        className="mt-5"
+        icon={UploadCloud}
+        loading={loading}
         onClick={handleUpload}
-        disabled={loading}
-        className="w-full mt-6 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 py-3 rounded-xl font-semibold transition"
       >
-        {loading ? "Uploading PDF..." : "📤 Upload PDF"}
-      </button>
+        Upload PDF
+      </Button>
 
       {text && (
         <>
-          <div className="mt-8 bg-slate-800 rounded-xl p-5 max-h-80 overflow-y-auto">
-
-            <h3 className="text-xl font-bold mb-4">
-              📖 Extracted Text
+          <div className="mt-6 bg-slate-950/60 border border-slate-800 rounded-xl p-5 max-h-72 overflow-y-auto">
+            <h3 className="font-semibold text-slate-200 mb-3 text-sm">
+              Extracted Text
             </h3>
 
-            <p className="text-gray-300 whitespace-pre-wrap leading-7">
+            <p className="text-slate-400 whitespace-pre-wrap leading-7 text-sm">
               {text}
             </p>
-
           </div>
 
-          <button
+          <Button
+            fullWidth
+            variant="success"
+            className="mt-4"
+            icon={Sparkles}
+            loading={summaryLoading}
             onClick={handleSummary}
-            disabled={summaryLoading}
-            className="w-full mt-6 bg-green-600 hover:bg-green-700 disabled:opacity-50 py-3 rounded-xl font-semibold"
           >
-            {summaryLoading
-              ? "Generating Summary..."
-              : "✨ Summarize PDF"}
-          </button>
+            Summarize PDF
+          </Button>
         </>
       )}
 
       {summary && (
-        <div className="mt-8 bg-slate-800 border border-green-500/30 rounded-xl p-6">
-
+        <div className="mt-6 bg-slate-950/60 border border-emerald-500/30 rounded-xl p-5">
           <div className="flex justify-between items-center">
-
-            <h3 className="text-green-400 font-bold text-xl">
-              ✨ AI Summary
+            <h3 className="text-emerald-400 font-semibold text-sm flex items-center gap-1.5">
+              <Sparkles size={14} />
+              AI Summary
             </h3>
 
             <button
-              onClick={() =>
-                navigator.clipboard.writeText(summary)
-              }
-              className="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-lg"
+              onClick={() => {
+                navigator.clipboard.writeText(summary);
+                toast.success("Copied to clipboard");
+              }}
+              className="text-slate-400 hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-800"
             >
-              📋 Copy
+              <Copy size={14} />
             </button>
-
           </div>
 
-          <p className="mt-5 whitespace-pre-wrap leading-7 text-gray-300">
+          <p className="mt-4 whitespace-pre-wrap leading-7 text-slate-300 text-sm">
             {summary}
           </p>
-
         </div>
       )}
     </div>

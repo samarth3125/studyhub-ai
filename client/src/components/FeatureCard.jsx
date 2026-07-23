@@ -8,7 +8,7 @@ const FeatureCard = ({ icon: Icon, title, desc }) => {
         scale: 1.03,
       }}
       whileTap={{ scale: 0.98 }}
-      className="bg-slate-900 border border-slate-800 rounded-3xl p-8 hover:border-indigo-500 transition"
+      className="bg-slate-900/60 border border-slate-800 rounded-2xl backdrop-blur-sm p-8 hover:border-indigo-500/50 transition"
     >
       <Icon
         className="text-indigo-500 mb-6"
@@ -19,7 +19,7 @@ const FeatureCard = ({ icon: Icon, title, desc }) => {
         {title}
       </h3>
 
-      <p className="text-gray-400 leading-7">
+      <p className="text-slate-400 leading-7">
         {desc}
       </p>
     </motion.div>

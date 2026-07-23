@@ -47,7 +47,7 @@ const TechStack = () => {
           Modern Tech Stack
         </h2>
 
-        <p className="text-gray-400 mt-6 text-lg">
+        <p className="text-slate-400 mt-6 text-lg">
           Built using today's most powerful technologies.
         </p>
 
@@ -59,7 +59,7 @@ const TechStack = () => {
 
           <div
             key={item.name}
-            className="bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center hover:border-indigo-500 hover:-translate-y-2 transition-all duration-300"
+            className="bg-slate-900/60 border border-slate-800 rounded-2xl backdrop-blur-sm p-8 text-center hover:border-indigo-500/50 hover:-translate-y-2 transition-all duration-300"
           >
 
             <div className="text-5xl mb-5">
@@ -70,7 +70,7 @@ const TechStack = () => {
               {item.name}
             </h3>
 
-            <p className="text-gray-400 mt-3 text-sm">
+            <p className="text-slate-400 mt-3 text-sm">
               {item.desc}
             </p>
 

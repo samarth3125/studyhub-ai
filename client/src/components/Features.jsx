@@ -57,7 +57,7 @@ const Features = () => {
           Everything You Need to Study Smarter
         </h2>
 
-        <p className="text-gray-400 mt-6 text-lg">
+        <p className="text-slate-400 mt-6 text-lg">
           Powerful AI tools designed to make learning faster,
           easier, and more enjoyable.
         </p>

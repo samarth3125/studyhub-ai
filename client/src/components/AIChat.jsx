@@ -1,4 +1,6 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
+import { MessageSquare, Copy, Send } from "lucide-react";
 import { askAI } from "../api/chat";
 
 const quickPrompts = [
@@ -27,78 +29,72 @@ const AIChat = ({ note }) => {
       if (!question) setQuestion(customQuestion);
     } catch (err) {
       console.error(err);
-      alert("Failed to get AI response");
+      toast.error("Failed to get AI response");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="mt-6 bg-slate-800 border border-cyan-500/30 rounded-xl p-5">
-
-      <h3 className="text-cyan-400 font-bold text-lg mb-4">
-        💬 AI Study Assistant
+    <div className="mt-5 bg-slate-950/60 border border-cyan-500/30 rounded-xl p-5">
+      <h3 className="text-cyan-400 font-semibold text-sm flex items-center gap-1.5 mb-4">
+        <MessageSquare size={14} />
+        AI Study Assistant
       </h3>
 
-      {/* Quick Prompts */}
-
       <div className="flex flex-wrap gap-2 mb-4">
-
         {quickPrompts.map((prompt) => (
           <button
             key={prompt}
             onClick={() => handleAsk(prompt)}
-            className="bg-slate-700 hover:bg-cyan-600 px-3 py-2 rounded-lg text-sm transition"
+            disabled={loading}
+            className="bg-slate-800 hover:bg-cyan-600/80 disabled:opacity-50 px-3 py-1.5 rounded-lg text-xs transition-colors"
           >
             {prompt}
           </button>
         ))}
-
       </div>
-
-      {/* Input */}
 
       <textarea
         rows={3}
         value={question}
         onChange={(e) => setQuestion(e.target.value)}
         placeholder="Ask anything about this note..."
-        className="w-full bg-slate-900 border border-slate-700 rounded-xl p-4 outline-none focus:border-cyan-500"
+        className="w-full bg-slate-900/80 border border-slate-700 rounded-xl p-3.5 text-sm outline-none focus:border-cyan-500 resize-none placeholder:text-slate-500"
       />
 
       <button
         onClick={() => handleAsk()}
         disabled={loading}
-        className="mt-4 bg-cyan-600 hover:bg-cyan-700 px-6 py-3 rounded-xl font-semibold"
+        className="mt-3 inline-flex items-center gap-2 bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 px-5 py-2.5 rounded-xl text-sm font-medium transition-colors"
       >
-        {loading ? "Thinking..." : "💬 Ask AI"}
+        <Send size={14} />
+        {loading ? "Thinking..." : "Ask AI"}
       </button>
 
       {answer && (
-        <div className="mt-6 bg-slate-900 rounded-xl p-5 border border-cyan-500/20">
-
-          <div className="flex justify-between items-center mb-3">
-
-            <h4 className="font-bold text-cyan-400">
-              🤖 AI Response
+        <div className="mt-5 bg-slate-900/80 rounded-xl p-4 border border-cyan-500/20">
+          <div className="flex justify-between items-center mb-2.5">
+            <h4 className="font-semibold text-cyan-400 text-sm">
+              AI Response
             </h4>
 
             <button
-              onClick={() => navigator.clipboard.writeText(answer)}
-              className="bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded text-sm"
+              onClick={() => {
+                navigator.clipboard.writeText(answer);
+                toast.success("Copied to clipboard");
+              }}
+              className="text-slate-400 hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-800"
             >
-              📋 Copy
+              <Copy size={13} />
             </button>
-
           </div>
 
-          <p className="whitespace-pre-wrap leading-7 text-gray-300">
+          <p className="whitespace-pre-wrap leading-7 text-slate-300 text-sm">
             {answer}
           </p>
-
         </div>
       )}
-
     </div>
   );
 };

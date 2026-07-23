@@ -14,33 +14,29 @@ const Flashcard = ({ question, answer }) => {
         }`}
       >
         {/* Front */}
-        <div className="absolute inset-0 backface-hidden rounded-2xl bg-gradient-to-br from-orange-500 to-orange-700 flex flex-col justify-center items-center p-6 shadow-xl">
-          <p className="text-sm uppercase tracking-widest opacity-80">
+        <div className="absolute inset-0 backface-hidden rounded-2xl bg-slate-900 border border-slate-800 flex flex-col justify-center items-center p-6 shadow-xl">
+          <p className="text-xs uppercase tracking-widest text-indigo-400 font-medium">
             Question
           </p>
 
-          <h2 className="text-xl font-bold text-center mt-4">
+          <h2 className="text-lg font-semibold text-center mt-4 text-slate-100">
             {question}
           </h2>
 
-          <p className="text-sm opacity-70 mt-8">
-            Click to reveal answer
-          </p>
+          <p className="text-xs text-slate-500 mt-8">Click to reveal answer</p>
         </div>
 
         {/* Back */}
-        <div className="absolute inset-0 rotate-y-180 backface-hidden rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-700 flex flex-col justify-center items-center p-6 shadow-xl">
-          <p className="text-sm uppercase tracking-widest opacity-80">
+        <div className="absolute inset-0 rotate-y-180 backface-hidden rounded-2xl bg-indigo-600 border border-indigo-500/50 flex flex-col justify-center items-center p-6 shadow-xl">
+          <p className="text-xs uppercase tracking-widest text-indigo-200 font-medium">
             Answer
           </p>
 
-          <h2 className="text-xl font-bold text-center mt-4">
+          <h2 className="text-lg font-semibold text-center mt-4 text-white">
             {answer}
           </h2>
 
-          <p className="text-sm opacity-70 mt-8">
-            Click to flip back
-          </p>
+          <p className="text-xs text-indigo-200/70 mt-8">Click to flip back</p>
         </div>
       </div>
     </div>
