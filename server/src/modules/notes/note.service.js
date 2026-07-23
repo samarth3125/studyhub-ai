@@ -21,7 +21,7 @@ export const getNotes = async (userId, subjectId) => {
   return await Note.find({
     user: userId,
     subject: subjectId,
-  }).sort({ createdAt: -1 });
+  }).sort({ pinned: -1, createdAt: -1 });
 };
 
 export const updateNote = async (userId, noteId, data) => {
@@ -53,6 +53,19 @@ export const deleteNote = async (userId, noteId) => {
   if (!note) {
     throw new Error("Note not found");
   }
+
+  return note;
+};
+
+export const togglePinNote = async (userId, noteId) => {
+  const note = await Note.findOne({ _id: noteId, user: userId });
+
+  if (!note) {
+    throw new Error("Note not found");
+  }
+
+  note.pinned = !note.pinned;
+  await note.save();
 
   return note;
 };

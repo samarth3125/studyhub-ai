@@ -1,4 +1,5 @@
 import { summarizeNote } from "./ai.service.js";
+import { logActivity } from "../activity/activity.service.js";
 
 export const summarize = async (req, res) => {
   try {
@@ -11,6 +12,8 @@ export const summarize = async (req, res) => {
     }
 
     const summary = await summarizeNote(content);
+
+    logActivity(req.user.id, "summary");
 
     res.json({
       success: true,

@@ -1,4 +1,5 @@
 import { generateQuiz } from "./quiz.service.js";
+import { logActivity } from "../activity/activity.service.js";
 
 export const quiz = async (req, res) => {
   try {
@@ -12,6 +13,8 @@ export const quiz = async (req, res) => {
     }
 
     const questions = await generateQuiz(content);
+
+    logActivity(req.user.id, "quiz");
 
     res.json({
       success: true,

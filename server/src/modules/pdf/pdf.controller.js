@@ -1,4 +1,5 @@
 import { extractPDFText } from "./pdf.service.js";
+import { logActivity } from "../activity/activity.service.js";
 
 export const uploadPDF = async (req, res) => {
   try {
@@ -10,6 +11,8 @@ export const uploadPDF = async (req, res) => {
     }
 
     const text = await extractPDFText(req.file.buffer);
+
+    logActivity(req.user.id, "pdf");
 
     res.json({
       success: true,

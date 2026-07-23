@@ -3,6 +3,7 @@ import {
   getNotes,
   updateNote,
   deleteNote,
+  togglePinNote,
 } from "./note.service.js";
 
 export const addNote = async (req, res) => {
@@ -67,6 +68,22 @@ export const removeNote = async (req, res) => {
     res.json({
       success: true,
       message: "Note deleted successfully",
+    });
+  } catch (error) {
+    res.status(404).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const togglePin = async (req, res) => {
+  try {
+    const note = await togglePinNote(req.user.id, req.params.id);
+
+    res.json({
+      success: true,
+      note,
     });
   } catch (error) {
     res.status(404).json({

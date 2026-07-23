@@ -10,6 +10,8 @@ import pdfRoutes from "./modules/pdf/pdf.routes.js";
 import flashcardRoutes from "./modules/flashcards/flashcard.routes.js";
 import dashboardRoutes from "./modules/dashboard/dashboard.routes.js";
 import chatRoutes from "./modules/chat/chat.routes.js";
+import mindspaceRoutes from "./modules/mindspace/mindspace.routes.js";
+import plannerRoutes from "./modules/planner/planner.routes.js";
 
 const app = express();
 
@@ -34,6 +36,10 @@ app.use("/api/flashcards", flashcardRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 
 app.use("/api/chat", chatRoutes);
+
+app.use("/api/mindspace", mindspaceRoutes);
+
+app.use("/api/planner", plannerRoutes);
 
 app.get("/", (req, res) => {
     res.json({

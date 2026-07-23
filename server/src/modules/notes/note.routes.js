@@ -6,6 +6,7 @@ import {
   fetchNotes,
   editNote,
   removeNote,
+  togglePin,
 } from "./note.controller.js";
 
 const router = express.Router();
@@ -19,6 +20,8 @@ router.get(
 );
 
 router.put("/:id", protect, editNote);
+
+router.patch("/:id/pin", protect, togglePin);
 
 router.delete("/:id", protect, removeNote);
 
